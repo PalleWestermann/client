@@ -1,7 +1,8 @@
-import { inject, Injectable, signal } from "@angular/core";
+import { computed, DestroyRef, inject, Injectable, signal } from "@angular/core";
 import { PersonModel } from "./person.model";
 import { HttpErrorResponse } from "@angular/common/http";
 import { PersonService } from './person.service';
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 export interface PersonState {
   people: readonly PersonModel[],
@@ -17,6 +18,39 @@ const _initialState: PersonState = {
 
 @Injectable()
 export class PersonStore {
-  private readonly PersonService = inject(PersonService);
+  private readonly personService = inject(PersonService);
   private state = signal(_initialState);
+  private readonly destroyRef = inject(DestroyRef);
+
+
+  people = computed(() => this.state().people);
+  loading = computed(() => this.state().loading);
+  error = computed(() => this.state().error);
+
+  private loadPeople() {
+    this.setLoading();
+    this.personService.getPeople().pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe({
+      next:(people) => this.state.update(() => ({...this.state(),
+        loading: false, people })),
+      error:(error) => {
+        console.log(error),
+        this.setError(error)
+      }
+    });
+  }
+
+  private setLoading() {
+
+    this.state.update(() => ({ ...this.state(), loading: true}));
+  }
+
+  private setError(error: HttpErrorResponse) {
+    this.state.update(() => ({...this.state(), loading: false, error}));
+  }
+
+  constructor() {
+    this.loadPeople();
+  }
 }

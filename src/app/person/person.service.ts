@@ -9,9 +9,10 @@ import { PersonModel } from './person.model';
 export class PersonService {
 
   private readonly http = inject(HttpClient);
-  private url = environment+'/people';  //https://localhost:7141/api/people
+  private url = environment.apiUrl+'/people';  //https://localhost:7141/api/people
 
   getPeople() {
+    console.log(this.url);
     return this.http.get<PersonModel[]>(this.url);
   }
 
