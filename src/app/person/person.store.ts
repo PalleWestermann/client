@@ -40,6 +40,36 @@ export class PersonStore {
     });
   }
 
+  updatePerson(person: PersonModel) {
+    this.personService.updatePerson(person)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next:() => this.state.update(() => ({...this.state(), loading:
+        false, people: this.people().map(p => p.id === person.id ? person:p)
+      })),
+      error:(error) => {
+        console.log(error),
+        this.setError(error)
+      }
+    });
+  }
+
+  deletePerson(id:number) {
+    this.personService.deletePerson(id)
+    .pipe(takeUntilDestroyed(this.destroyRef))
+    .subscribe({
+      next:() => this.state.update(() => ({
+        ...this.state(), loading:
+        false,
+        people: this.people().filter(p=>id !== id)
+      })),
+      error:(error) => {
+        console.log(error),
+        this.setError(error)
+      }
+    });
+  }
+
   private loadPeople() {
     this.setLoading();
     this.personService.getPeople().pipe(
