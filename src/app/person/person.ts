@@ -31,7 +31,17 @@ export class Person {
 
   onSubmit() {
     const person = this.personForm.value as PersonModel;
-    console.log(person);
+
+    if (person.id == 0){
+      console.log("added");
+      this.personStore.addPerson(person);
+    }
+    else {
+      console.log("updated");
+      this.personStore.updatePerson(person);
+    }
+
+    this.personForm.reset();
 
   }
 
