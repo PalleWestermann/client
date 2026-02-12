@@ -12,4 +12,6 @@ export class Person {
   private readonly personStore = inject(PersonStore)
 
   people = this.personStore.people;
+  loading = this.personStore.loading;
+  error = this.personStore.error;
 }

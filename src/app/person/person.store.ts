@@ -3,6 +3,7 @@ import { PersonModel } from "./person.model";
 import { HttpErrorResponse } from "@angular/common/http";
 import { PersonService } from './person.service';
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Person } from "./person";
 
 export interface PersonState {
   people: readonly PersonModel[],
@@ -26,6 +27,18 @@ export class PersonStore {
   people = computed(() => this.state().people);
   loading = computed(() => this.state().loading);
   error = computed(() => this.state().error);
+
+  addPerson(person: PersonModel) {
+    this.personService.addPerson(person).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next:(person:PersonModel) => this.state.update(() => ({
+        ...this.state(),loading:false, people: [...this.people(), person]
+      })),
+      error:(error) => {
+        console.log(error),
+        this.setError(error)
+      }
+    });
+  }
 
   private loadPeople() {
     this.setLoading();
