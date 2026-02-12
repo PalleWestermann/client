@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { PersonStore } from './person.store';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { PersonModel } from './person.model';
 
 @Component({
   selector: 'app-person',
@@ -17,4 +18,24 @@ export class Person {
   error = this.personStore.error;
 
   private readonly fb = inject(FormBuilder);
+
+  personForm = this.fb.group({
+    id:[0],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required]
+  });
+
+  get f() {
+    return this.personForm.controls;
+  }
+
+  onSubmit() {
+    const person = this.personForm.value as PersonModel;
+    console.log(person);
+
+  }
+
+  onReset() {
+    this.personForm.reset();
+  }
 }

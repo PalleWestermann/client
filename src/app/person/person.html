@@ -8,22 +8,31 @@
 }
 
 <h3>Add/update Person</h3>
-<form id="form" class="mb-3 d-inline-flex gap-2">
-          <div>
-             <input type="text" class="form-control" placeholder="First Name">
-             <p class="text-danger">Firstname validation</p>
+<form [formGroup]="personForm" (ngSubmit)="onSubmit()" class="mb-3 d-inline-flex gap-2">
+        <input type="hidden" formControlName="id">
+        <div>
+             <input type="text" formControlName="firstName" class="form-control" placeholder="First Name">
+             @if(f.firstName.invalid && (f.firstName.touched || f.firstName.dirty)){
+               @if(f.firstName.errors?.["required"]) {
+                <p class="text-danger">First Name is required</p>
+               }
+             }
           </div>
 
           <div>
-             <input type="text" class="form-control" placeholder="Last Name">
-                          <p class="text-danger">Lastname validation</p>
+             <input type="text" formControlName="lastName" class="form-control" placeholder="Last Name">
+            @if(f.lastName.invalid && (f.lastName.touched || f.lastName.dirty)){
+               @if(f.lastName.errors?.["required"]) {
+                <p class="text-danger">Last Name is required</p>
+               }
+             }
 
           </div>
 
           <div>
             <div class="d-inline-flex gap-2">
-              <button  type="submit" class="btn btn-info">Save</button>
-              <button type="button" class="btn btn-info">Rest</button>
+              <button  type="submit" class="btn btn-info" [disabled]="personForm.invalid">Save</button>
+              <button type="button" class="btn btn-primary" (click)="onReset()">Reset</button>
             </div>
           </div>
       </form>
