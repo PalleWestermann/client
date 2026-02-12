@@ -41,11 +41,26 @@ export class Person {
       this.personStore.updatePerson(person);
     }
 
-    this.personForm.reset();
+    this.onReset();
 
   }
 
   onReset() {
     this.personForm.reset();
+    this.personForm.patchValue({
+      id: 0,
+      firstName: '',
+      lastName: ''
+    });
+  }
+
+  onEdit(person:PersonModel) {
+    this.personForm.patchValue(person);
+  }
+
+  onDelete(person:PersonModel) {
+    if (confirm(`Are you sure you want to delete person : ${person.firstName} ${person.lastName}`)) {
+      this.personStore.deletePerson(person.id);
+    }
   }
 }

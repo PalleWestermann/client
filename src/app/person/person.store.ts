@@ -61,7 +61,7 @@ export class PersonStore {
       next:() => this.state.update(() => ({
         ...this.state(), loading:
         false,
-        people: this.people().filter(p=>id !== id)
+        people: this.people().filter(p=>p.id !== id)
       })),
       error:(error) => {
         console.log(error),
